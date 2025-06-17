@@ -12,7 +12,7 @@ elasticsearch-certified-engineer-training/
 ├── Elastic Certified Engineer Practice Exercises.md
 ├── datasets/
 │   ├── ecommerce_sample.json (included in elastic installation)
-│   ├── sample-maritime.csv
+│   ├── maritime-sample.csv
 │   └── user_behavior.json
 ├── kibana_dashboards/
 │   ├── ecommerce_analytics
