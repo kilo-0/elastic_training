@@ -1,260 +1,209 @@
-# elastic_training
-Practice with Elasticsearch management and Kibana visualizations
+# Elasticsearch Certified Engineer Training
 
+A comprehensive training repository for preparing for the Elastic Certified Engineer exam, featuring hands-on practice exercises and sample datasets for Kibana visualization.
 
-# Elasticsearch Management & Kibana Visualizations Practice
+## Overview
 
-A hands-on project for learning and practicing Elasticsearch cluster management, data indexing, querying, and creating compelling visualizations with Kibana.
+This repository contains structured learning materials and practical exercises designed to help you master the skills required for the Elastic Certified Engineer certification. The training covers core Elasticsearch concepts, cluster management, data modeling, search optimization, and Kibana visualization techniques using a containerized Docker environment.
 
-## 🎯 Project Overview
+## Certification Goals
 
-This repository contains exercises, configurations, and examples for mastering Elasticsearch operations and Kibana dashboard creation. Perfect for developers, data analysts, and DevOps engineers looking to strengthen their ELK stack skills.
+The Elastic Certified Engineer exam validates your ability to:
+- Install, configure, and manage Elasticsearch clusters (including containerized deployments)
+- Design and implement effective data mappings and indexing strategies
+- Optimize search performance and query execution
+- Implement security, monitoring, and backup solutions
+- Create meaningful visualizations and dashboards in Kibana
+- Work with Elasticsearch in various deployment scenarios including Docker
 
-## 🚀 Features
+## Repository Structure
 
-- **Elasticsearch Management**: Index creation, mapping configuration, and cluster administration
-- **Data Operations**: Bulk indexing, CRUD operations, and data transformation
-- **Advanced Querying**: Complex search queries, aggregations, and filtering
-- **Kibana Visualizations**: Interactive charts, dashboards, and monitoring displays
-- **Real-world Datasets**: Practice with sample e-commerce, log, and metric data
+```
+elasticsearch-certified-engineer-training/
+├── README.md
+├── docker-compose.yml
+├── Elastic Certified Engineer Practice Exercises.md
+├── datasets/
+│   ├── ecommerce_sample.json
+│   ├── web_logs.json
+│   ├── system_metrics.json
+│   └── user_behavior.json
+├── kibana_dashboards/
+│   ├── ecommerce_analytics.ndjson
+│   └── system_monitoring.ndjson
+└── scripts/
+    ├── Load-SampleData.ps1
+    └── Setup-Cluster.ps1
+```
 
-## 📋 Prerequisites
+## Getting Started
 
-Before getting started, ensure you have:
+### Prerequisites
 
-- Docker and Docker Compose installed
+- Docker Desktop installed and running
+- Docker Compose
+- PowerShell (Windows PowerShell or PowerShell Core)
 - Basic understanding of JSON and REST APIs
-- Familiarity with command line operations
-- At least 4GB RAM available for the ELK stack
+- Familiarity with Docker containers
 
-## 🛠️ Installation & Setup
+### Installation
 
-### 1. Clone the Repository
+1. **Clone the repository:**
+   ```powershell
+   git clone https://github.com/yourusername/elasticsearch-certified-engineer-training.git
+   cd elasticsearch-certified-engineer-training
+   ```
 
-```bash
-git clone https://github.com/yourusername/elasticsearch-kibana-practice.git
-cd elasticsearch-kibana-practice
+2. **Start the containerized Elasticsearch cluster:**
+   ```powershell
+   # Start the Docker Compose stack
+   docker-compose up -d
+   
+   # Verify containers are running
+   docker-compose ps
+   ```
+
+3. **Wait for cluster to be ready and load sample datasets:**
+   ```powershell
+   # Check cluster health
+   Invoke-RestMethod -Uri "http://localhost:9200/_cluster/health" -Method Get
+   
+   # Load sample datasets
+   .\scripts\Load-SampleData.ps1
+   ```
+
+## Training Materials
+
+### Practice Exercises
+
+The `Elastic Certified Engineer Practice Exercises.md` file contains:
+
+- **Cluster Management**: Node configuration, shard allocation, and cluster health monitoring
+- **Index Management**: Mapping design, analyzers, and index lifecycle policies
+- **Search & Aggregations**: Complex queries, aggregation pipelines, and performance optimization
+- **Data Processing**: Ingest pipelines, transforms, and data enrichment
+- **Security**: Authentication, authorization, and field-level security
+- **Monitoring**: Cluster monitoring, alerting, and troubleshooting
+
+### Sample Datasets
+
+#### E-commerce Data (`ecommerce_sample.json`)
+- Product catalog with categories, prices, and inventory
+- Customer orders and transaction history
+- Perfect for practicing aggregations and business analytics
+
+#### Web Server Logs (`web_logs.json`)
+- Apache/Nginx access logs with timestamps, IPs, and response codes
+- Ideal for log analysis and security monitoring exercises
+
+#### System Metrics (`system_metrics.json`)
+- CPU, memory, and disk usage metrics over time
+- Great for time-series analysis and performance monitoring
+
+#### User Behavior (`user_behavior.json`)
+- User interactions, page views, and session data
+- Useful for funnel analysis and user journey mapping
+
+## Usage Examples
+
+### Basic Cluster Health Check
+```powershell
+Invoke-RestMethod -Uri "http://localhost:9200/_cluster/health?pretty" -Method Get
 ```
 
-### 2. Start the ELK Stack
+### Load Sample E-commerce Data
+```powershell
+$headers = @{ "Content-Type" = "application/json" }
+$data = Get-Content -Path "datasets\ecommerce_sample.json" -Raw
+Invoke-RestMethod -Uri "http://localhost:9200/ecommerce/_bulk?pretty" -Method Post -Headers $headers -Body $data
+```
 
-```bash
-# Start Elasticsearch and Kibana using Docker Compose
-docker-compose up -d
+### Create Index with Custom Mapping
+```powershell
+$mapping = @{
+    mappings = @{
+        properties = @{
+            title = @{ type = "text"; analyzer = "english" }
+            price = @{ type = "float" }
+            category = @{ type = "keyword" }
+        }
+    }
+} | ConvertTo-Json -Depth 10
 
-# Verify services are running
+$headers = @{ "Content-Type" = "application/json" }
+Invoke-RestMethod -Uri "http://localhost:9200/products?pretty" -Method Put -Headers $headers -Body $mapping
+```
+
+### Check Docker Container Status
+```powershell
+# View running containers
 docker-compose ps
+
+# Check Elasticsearch logs
+docker-compose logs elasticsearch
+
+# Check Kibana logs
+docker-compose logs kibana
+
+# Access Elasticsearch container shell
+docker-compose exec elasticsearch bash
 ```
 
-### 3. Access the Services
+## Kibana Dashboards
 
-- **Elasticsearch**: http://localhost:9200
-- **Kibana**: http://localhost:5601
+Pre-built dashboards are available in the `kibana_dashboards/` directory:
 
-## 📁 Project Structure
+- **E-commerce Analytics**: Sales trends, top products, and customer insights
+- **System Monitoring**: Infrastructure health and performance metrics
 
-```
-elasticsearch-kibana-practice/
-├── docker-compose.yml          # ELK stack configuration
-├── elasticsearch/
-│   ├── mappings/              # Index mapping templates
-│   ├── queries/               # Sample search queries
-│   └── scripts/               # Automation scripts
-├── kibana/
-│   ├── dashboards/            # Exported dashboard configurations
-│   ├── visualizations/        # Individual chart configs
-│   └── index-patterns/        # Index pattern definitions
-├── data/
-│   ├── sample-data/           # Practice datasets
-│   └── bulk-import/           # Bulk loading scripts
-└── exercises/
-    ├── beginner/              # Basic operations
-    ├── intermediate/          # Advanced queries and aggregations
-    └── advanced/              # Complex analytics and monitoring
-```
+### Import Dashboards
+1. Open Kibana (http://localhost:5601)
+2. Go to Stack Management > Saved Objects
+3. Click "Import" and select the `.ndjson` files from `kibana_dashboards/`
 
-## 🎓 Learning Path
+## Exam Preparation Tips
 
-### Beginner Level
-1. **Elasticsearch Basics**
-   - Create your first index
-   - Insert and retrieve documents
-   - Basic search queries
-   - Understanding mappings
+1. **Hands-on Practice**: Complete all exercises in the practice file
+2. **Documentation**: Familiarize yourself with the official Elasticsearch documentation
+3. **Performance Tuning**: Focus on query optimization and cluster configuration
+4. **Security**: Understand role-based access control and security features
+5. **Troubleshooting**: Practice diagnosing and resolving common issues
 
-2. **Kibana Fundamentals**
-   - Navigate the interface
-   - Create index patterns
-   - Build basic visualizations
-   - Discover data exploration
+## Study Resources
 
-### Intermediate Level
-1. **Advanced Elasticsearch**
-   - Complex queries and filters
-   - Aggregations and metrics
-   - Index templates and aliases
-   - Cluster health monitoring
+- [Official Elasticsearch Documentation](https://www.elastic.co/guide/en/elasticsearch/reference/current/index.html)
+- [Elastic Certified Engineer Exam Guide](https://www.elastic.co/training/certification)
+- [Elasticsearch: The Definitive Guide](https://www.elastic.co/guide/en/elasticsearch/guide/current/index.html)
 
-2. **Dashboard Creation**
-   - Multi-chart dashboards
-   - Interactive filters
-   - Time-based visualizations
-   - Custom metrics
-
-### Advanced Level
-1. **Performance Optimization**
-   - Query optimization
-   - Index lifecycle management
-   - Cluster scaling strategies
-   - Monitoring and alerting
-
-2. **Production Scenarios**
-   - Log analysis workflows
-   - Real-time monitoring
-   - Data pipeline integration
-   - Security configurations
-
-## 🔧 Quick Start Examples
-
-### Create an Index with Sample Data
-
-```bash
-# Create a products index
-curl -X PUT "localhost:9200/products" -H 'Content-Type: application/json' -d'
-{
-  "mappings": {
-    "properties": {
-      "name": { "type": "text" },
-      "price": { "type": "float" },
-      "category": { "type": "keyword" },
-      "created_date": { "type": "date" }
-    }
-  }
-}'
-
-# Add sample product
-curl -X POST "localhost:9200/products/_doc" -H 'Content-Type: application/json' -d'
-{
-  "name": "Wireless Headphones",
-  "price": 99.99,
-  "category": "Electronics",
-  "created_date": "2024-01-15"
-}'
-```
-
-### Basic Search Query
-
-```bash
-# Search for electronics
-curl -X GET "localhost:9200/products/_search" -H 'Content-Type: application/json' -d'
-{
-  "query": {
-    "match": {
-      "category": "Electronics"
-    }
-  }
-}'
-```
-
-## 📊 Sample Visualizations
-
-The project includes examples for creating:
-
-- **Bar Charts**: Product sales by category
-- **Line Graphs**: Revenue trends over time
-- **Pie Charts**: Market share distribution
-- **Heat Maps**: Geographic sales data
-- **Data Tables**: Detailed transaction logs
-- **Metric Displays**: KPI monitoring
-
-## 🧪 Practice Exercises
-
-### Exercise 1: E-commerce Analytics
-- Import sample e-commerce data
-- Create product performance dashboards
-- Analyze customer behavior patterns
-- Build sales forecasting visualizations
-
-### Exercise 2: Log Analysis
-- Process application log files
-- Create error monitoring dashboards
-- Set up alerting for critical issues
-- Analyze system performance metrics
-
-### Exercise 3: Real-time Monitoring
-- Stream live data into Elasticsearch
-- Build operational dashboards
-- Create custom alerting rules
-- Monitor system health metrics
-
-## 🔍 Useful Commands
-
-```bash
-# Check cluster health
-curl -X GET "localhost:9200/_cluster/health?pretty"
-
-# List all indices
-curl -X GET "localhost:9200/_cat/indices?v"
-
-# View index mapping
-curl -X GET "localhost:9200/your-index/_mapping?pretty"
-
-# Delete an index
-curl -X DELETE "localhost:9200/your-index"
-
-# Bulk import data
-curl -X POST "localhost:9200/_bulk" -H 'Content-Type: application/json' --data-binary @data/bulk-import/sample-data.json
-```
-
-## 📚 Resources
-
-- [Elasticsearch Official Documentation](https://www.elastic.co/guide/en/elasticsearch/reference/current/index.html)
-- [Kibana User Guide](https://www.elastic.co/guide/en/kibana/current/index.html)
-- [Elasticsearch Query DSL](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl.html)
-- [Kibana Visualization Types](https://www.elastic.co/guide/en/kibana/current/dashboard.html)
-
-## 🤝 Contributing
+## Contributing
 
 Contributions are welcome! Please feel free to submit pull requests with:
-
 - Additional practice exercises
-- Sample datasets
-- Visualization examples
-- Documentation improvements
-- Bug fixes
+- New sample datasets
+- Improved documentation
+- Bug fixes and enhancements
 
-## 📝 License
+## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## 🆘 Troubleshooting
-
-### Common Issues
-
-**Elasticsearch won't start:**
-- Check if port 9200 is available
-- Ensure sufficient memory allocation
-- Verify Docker resources
-
-**Kibana connection issues:**
-- Wait for Elasticsearch to fully initialize
-- Check network connectivity between containers
-- Verify Kibana configuration settings
-
-**Performance problems:**
-- Increase Docker memory limits
-- Optimize query patterns
-- Consider index settings adjustments
-
-## 📞 Support
+## Support
 
 If you encounter issues or have questions:
+1. Check the [Issues](https://github.com/yourusername/elasticsearch-certified-engineer-training/issues) section
+2. Review the official Elasticsearch documentation
+3. Join the [Elastic Community](https://discuss.elastic.co/) for additional support
 
-1. Check the troubleshooting section above
-2. Review the official Elastic documentation
-3. Open an issue in this repository
-4. Join the Elastic community forums
+## Progress Tracking
+
+- [ ] Complete Cluster Management exercises
+- [ ] Master Index Management concepts
+- [ ] Practice Search & Aggregation queries
+- [ ] Implement Security configurations
+- [ ] Build Kibana visualizations
+- [ ] Take practice exams
+- [ ] Schedule certification exam
 
 ---
 
-**Happy Learning!** 🎉 Start with the beginner exercises and work your way up to building production-ready Elasticsearch solutions.
+**Good luck with your Elastic Certified Engineer certification journey!**
