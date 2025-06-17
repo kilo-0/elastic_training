@@ -6,6 +6,18 @@ A comprehensive training repository for preparing for the Elastic Certified Engi
 
 This repository contains structured learning materials and practical exercises designed to help you master the skills required for the Elastic Certified Engineer certification. The training covers core Elasticsearch concepts, cluster management, data modeling, search optimization, and Kibana visualization techniques using a containerized Docker environment.
 
+elasticsearch-certified-engineer-training/
+├── README.md
+├── Elastic Certified Engineer Practice Exercises.md
+├── datasets/
+│   ├── ecommerce_sample.json (included in elastic installation)
+│   ├── sample-maritime.csv
+│   └── user_behavior.json
+├── kibana_dashboards/
+│   ├── ecommerce_analytics
+│   └── maritime vessel tracking
+
+    
 ## Certification Goals
 
 The Elastic Certified Engineer exam validates your ability to:
@@ -16,27 +28,14 @@ The Elastic Certified Engineer exam validates your ability to:
 - Create meaningful visualizations and dashboards in Kibana
 - Work with Elasticsearch in various deployment scenarios including Docker
 
-## Repository Structure
-
-```
-elasticsearch-certified-engineer-training/
-├── README.md
-├── docker-compose.yml
-├── Elastic Certified Engineer Practice Exercises.md
-├── datasets/
-│   ├── ecommerce_sample.json
-│   ├── web_logs.json
-│   ├── system_metrics.json
-│   └── user_behavior.json
-├── kibana_dashboards/
-│   ├── ecommerce_analytics.ndjson
-│   └── system_monitoring.ndjson
-└── scripts/
-    ├── Load-SampleData.ps1
-    └── Setup-Cluster.ps1
-```
 
 ## Getting Started
+# Install Docker here
+https://docs.docker.com/
+
+#Install instructions for Elastic on Docker
+https://www.elastic.co/docs/deploy-manage/deploy/self-managed/install-elasticsearch-docker-basic
+
 
 ### Prerequisites
 
@@ -46,7 +45,7 @@ elasticsearch-certified-engineer-training/
 - Basic understanding of JSON and REST APIs
 - Familiarity with Docker containers
 
-### Installation
+### Example Installation (using powershell commands inside Docker)
 
 1. **Clone the repository:**
    ```powershell
@@ -117,6 +116,11 @@ $headers = @{ "Content-Type" = "application/json" }
 $data = Get-Content -Path "datasets\ecommerce_sample.json" -Raw
 Invoke-RestMethod -Uri "http://localhost:9200/ecommerce/_bulk?pretty" -Method Post -Headers $headers -Body $data
 ```
+
+### OR load from  Kibana (/app/home#/tutorial_directory/sampleData)
+![image](https://github.com/user-attachments/assets/e857a3ab-0ad7-4af7-8eeb-936566f63caf)
+
+
 
 ### Create Index with Custom Mapping
 ```powershell
