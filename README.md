@@ -6,6 +6,7 @@ A comprehensive training repository for preparing for the Elastic Certified Engi
 
 This repository contains structured learning materials and practical exercises designed to help you master the skills required for the Elastic Certified Engineer certification. The training covers core Elasticsearch concepts, cluster management, data modeling, search optimization, and Kibana visualization techniques using a containerized Docker environment.
 
+```
 elasticsearch-certified-engineer-training/
 ├── README.md
 ├── Elastic Certified Engineer Practice Exercises.md
@@ -16,7 +17,7 @@ elasticsearch-certified-engineer-training/
 ├── kibana_dashboards/
 │   ├── ecommerce_analytics
 │   └── maritime vessel tracking
-
+```
     
 ## Certification Goals
 
@@ -123,19 +124,39 @@ Invoke-RestMethod -Uri "http://localhost:9200/ecommerce/_bulk?pretty" -Method Po
 
 
 ### Create Index with Custom Mapping
-```powershell
-$mapping = @{
-    mappings = @{
-        properties = @{
-            title = @{ type = "text"; analyzer = "english" }
-            price = @{ type = "float" }
-            category = @{ type = "keyword" }
+```Query DSL
+PUT /ecommerce_enhanced
+{
+  "mappings": {
+    "dynamic_templates": [
+      {
+        "prices": {
+          "match": "*_price",
+          "mapping": {
+            "type": "scaled_float",
+            "scaling_factor": 100
+          }
         }
-    }
-} | ConvertTo-Json -Depth 10
-
-$headers = @{ "Content-Type" = "application/json" }
-Invoke-RestMethod -Uri "http://localhost:9200/products?pretty" -Method Put -Headers $headers -Body $mapping
+      },
+      {
+        "boolean_fields": {
+          "match": "is_*",
+          "mapping": {
+            "type": "boolean"
+          }
+        }
+      },
+      {
+        "timestamps": {
+          "match": "*timestamp*",
+          "mapping": {
+            "type": "date"
+          }
+        }
+      }
+    ]
+  }
+}
 ```
 
 ### Check Docker Container Status
@@ -155,15 +176,12 @@ docker-compose exec elasticsearch bash
 
 ## Kibana Dashboards
 
-Pre-built dashboards are available in the `kibana_dashboards/` directory:
+Pre-built dashboards are available in the included Kibana installation that you can inspect to see how the visualizations were made. 
 
-- **E-commerce Analytics**: Sales trends, top products, and customer insights
-- **System Monitoring**: Infrastructure health and performance metrics
+I will also detail building a dashboard with sample maritime data in this repo. 
 
-### Import Dashboards
-1. Open Kibana (http://localhost:5601)
-2. Go to Stack Management > Saved Objects
-3. Click "Import" and select the `.ndjson` files from `kibana_dashboards/`
+![image](https://github.com/user-attachments/assets/21c7e688-b06a-4e4b-a5c9-0f3108ebf5a1)
+
 
 ## Exam Preparation Tips
 
@@ -179,35 +197,4 @@ Pre-built dashboards are available in the `kibana_dashboards/` directory:
 - [Elastic Certified Engineer Exam Guide](https://www.elastic.co/training/certification)
 - [Elasticsearch: The Definitive Guide](https://www.elastic.co/guide/en/elasticsearch/guide/current/index.html)
 
-## Contributing
 
-Contributions are welcome! Please feel free to submit pull requests with:
-- Additional practice exercises
-- New sample datasets
-- Improved documentation
-- Bug fixes and enhancements
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## Support
-
-If you encounter issues or have questions:
-1. Check the [Issues](https://github.com/yourusername/elasticsearch-certified-engineer-training/issues) section
-2. Review the official Elasticsearch documentation
-3. Join the [Elastic Community](https://discuss.elastic.co/) for additional support
-
-## Progress Tracking
-
-- [ ] Complete Cluster Management exercises
-- [ ] Master Index Management concepts
-- [ ] Practice Search & Aggregation queries
-- [ ] Implement Security configurations
-- [ ] Build Kibana visualizations
-- [ ] Take practice exams
-- [ ] Schedule certification exam
-
----
-
-**Good luck with your Elastic Certified Engineer certification journey!**
