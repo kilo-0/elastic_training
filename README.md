@@ -159,21 +159,6 @@ PUT /ecommerce_enhanced
 }
 ```
 
-### Check Docker Container Status
-```powershell
-# View running containers
-docker-compose ps
-
-# Check Elasticsearch logs
-docker-compose logs elasticsearch
-
-# Check Kibana logs
-docker-compose logs kibana
-
-# Access Elasticsearch container shell
-docker-compose exec elasticsearch bash
-```
-
 ## Kibana Dashboards
 
 Pre-built dashboards are available in the included Kibana installation that you can inspect to see how the visualizations were made. 
